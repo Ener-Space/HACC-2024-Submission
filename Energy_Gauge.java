@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -70,7 +71,7 @@ public class Energy_Gauge {
             display(electronicNames, electronicQuantities, electronicPower, size);
             break;
           case 4:
-            edit(electronicNames, electronicQuantities, electronicPower, size);
+            System.out.println("Not here yet - EDIT");
           case 5:
             // User wants to quit. The loop will exit.
             break;
@@ -83,6 +84,104 @@ public class Energy_Gauge {
       // The user chose to quit, write out the grocery list to file.
       writeToFile(args[1], electronicNames, electronicQuantities, electronicPower, size);
     }
+  public static int readFromFile(String inputFilename, String[] electronicNamesParam, Integer electronicQuantitiesParam[], Integer electronicPowerParam[])
+    throws ArrayIndexOutOfBoundsException, NoSuchElementException {
+                                
+    // The file to read.
+    File inFile = new File(inputFilename);
+    // Read input from the file.
+    Scanner fileReader = null;
+    
+    // How many items are read in from inputFilename.
+    int initialSize = 0;
+    
+    // Temporarily stores an entire line from the file.
+    String inputLine = "";
+    // Store the name of the item.
+    String name = "";
+    // Temporarily stores the quantity.
+    // Reads in the quantity as a String first then converts.
+    String stringQuantity = "";
+    // Successful conversion of the above variable will be stored here.
+    int quantity = 0;
+    //Stores the name of the item's store
+    String store = "";
+    // Reads in the Power as a String first then converts.
+    String stringPower = "";
+    // Successful conversion of the above variable will be stored here.
+    int power = 0;
+    
+    // Attempt to open the file for reading.
+    try {
+      fileReader = new Scanner(inFile);
+    }
+    catch (FileNotFoundException fnf) {
+      System.out.printf("Error: File not found %s%n", inFile.getAbsolutePath());
+      // Since the file could not be opened the electrnic list is empty.
+      return 0;
+    }
+    
+    // Indicate the program is proceeding.
+    System.out.printf("Read from file: %s%n", inFile.getAbsolutePath());
+    
+    // Grab the first line which is the headers.
+    // Doesn't actually do anything with it...
+    String headers = fileReader.nextLine();
+    
+    // Read all lines in the file and store item name and quantity information.
+    while (fileReader.hasNextLine()) {
+      // Get a line of data.
+      inputLine = fileReader.nextLine();
+      
+      // Prepare to parse a line in the CSV file.
+      Scanner electronicLineReader = new Scanner(inputLine);
+      // Values are separated by commas.
+      electronicLineReader.useDelimiter(",");
+      
+      // Retrieve the name and quantity from the line.
+      name = electronicLineReader.next();
+      stringQuantity = electronicLineReader.next();
+      stringPower = electronicLineReader.next();
+      
+      // Attempt to parse the quantity to an int.
+      try {
+        quantity = Integer.parseInt(stringQuantity);
+      }
+      catch (NumberFormatException nfe) {
+        // Indicate the parse failed.
+        System.out.printf("Error: Unable to parse quantity \"%s\" for item %s, using 1 instead.%n", stringQuantity, name);
+        // Use 1 as a defensive measure.
+        quantity = 1;
+      }
+      try {
+        power = Integer.parseInt(stringPower);
+      }
+      catch (NumberFormatException nfe) {
+        // Indicate the parse failed.
+        System.out.printf("Error: Unable to parse power \"%s\" for item %s, using 1 instead.%n", stringPower, name);
+        // Use 1 as a defensive measure.
+        power = 1;
+      }
+      
+      // Error correction.
+      // Ensure all quantities are positive.
+      quantity = Math.abs(quantity);
+      
+      // Add the grocery item to the arrays.
+      electronicNamesParam[initialSize] = name;
+      electronicQuantitiesParam[initialSize] = quantity;
+      electronicPowerParam[initialSize] = power;
+      
+      // Increase size after an item has been added.
+      initialSize++;
+    }
+    
+    // Done reading.
+    fileReader.close();
+    
+    // Reading done, return how many items were stored.
+    return initialSize;
+  }
       /**
    * Displays the menu for the program and returns user's choice
    * 
@@ -131,14 +230,14 @@ public class Energy_Gauge {
   /**
    * Adds a electronic item to an array. Prompts the user for item name and quantity.
    * 
-   * @param itemNamesParam is the electrnic item names
-   * @param itemQuantitiesParam is the quantities of the electronics items  
-   * @param itemStoresParam is the amount of power the electronics consume
+   * @param electronicNamesParam is the electrnic item names
+   * @param electronicQuantitiesParam is the quantities of the electronics items  
+   * @param electronicPowerParam is the amount of power the electronics consume
    * @param size is the size of the list
    * @param MAX_SIZE is the maximum number of electronics that can be stored
    * @return new size of the  list
    */
-  public static int add(String[] itemNamesParam, Integer[] itemQuantitiesParam, int size, Integer itemPowersParam[], final int MAX_SIZE) {
+  public static int add(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, int size, Integer itemPowersParam[], final int MAX_SIZE) {
   
     // Special case if the arrays are full.
     if (size == MAX_SIZE) {
@@ -182,12 +281,12 @@ public class Energy_Gauge {
     quantity = Math.abs(quantity);
             
     // Add the grocery item to the arrays.
-    itemNamesParam[size] = inputName;
-    itemQuantitiesParam[size] = quantity;
+    electronicNamesParam[size] = inputName;
+    electronicQuantitiesParam[size] = quantity;
     itemPowersParam[size] = powerConsume;
    
     // Give feedback to user to let them know what is being addded.
-    System.out.println("Added row #" + (size + 1) + ": " + itemNamesParam[size] + " " + itemQuantitiesParam[size] + " " + itemPowersParam[size]);
+    System.out.println("Added row #" + (size + 1) + ": " + electronicNamesParam[size] + " " + electronicQuantitiesParam[size] + " " + itemPowersParam[size]);
    
     // Increase size after an item has been added.
     size++;
@@ -201,14 +300,14 @@ public class Energy_Gauge {
    * Asks the user which row to delete an item and shifts elements to the left.
    * Does nothing if the user enters a non-integer.
    * 
-   * @param itemNamesParam is the electronic item names
-   * @param itemQuantitiesParam is the quantities of the electrnic items
-   * @param itemStoresParam is the power consumption of the items
+   * @param electronicNamesParam is the electronic item names
+   * @param electronicQuantitiesParam is the quantities of the electrnic items
+   * @param electronicPowerParam is the power consumption of the items
    * @param size is the size of the list
    * @param MAX_SIZE is the maximum number of electronics that can be stored
    * @return new size of the list
    */
-  public static int delete(String[] itemNamesParam, Integer[] itemQuantitiesParam, Integer itemPowersParam[], int size, final int MAX_SIZE) {
+  public static int delete(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer itemPowersParam[], int size, final int MAX_SIZE) {
     //Checks if list is empty, if it's not runs the delete function, else warns the user.
     if (size>0) {
       // Read input from the keyboard.
@@ -246,20 +345,20 @@ public class Energy_Gauge {
           // Convert row to an index in the array by subtracting 1.
           index = inputRow - 1;
           // Give feedback to user to let them know what is being deleted
-          System.out.println("Deleting row #" + inputRow + ": " + itemNamesParam[index] + " " + itemQuantitiesParam[index] + " " + itemPowersParam[index]);
+          System.out.println("Deleting row #" + inputRow + ": " + electronicNamesParam[index] + " " + electronicQuantitiesParam[index] + " " + itemPowersParam[index]);
           //Checks if the list is full AND if the row to be deleted is the last row. If so, replaces the deleted row with null instead of shifting.
           if (index==MAX_SIZE-1 && size==MAX_SIZE) {  
             //Replaces values with null instead of shifting them.
-            itemNamesParam[index] = null;
-            itemQuantitiesParam[index] = null;
+            electronicNamesParam[index] = null;
+            electronicQuantitiesParam[index] = null;
             itemPowersParam[index] = null;
           } else {
             // Delete item by shifting items on the right of the item to the left.
             // Start the shift at the specific index.
             for (int i = index; i < size; i++) {
               // Take the element on the right and store it on the left.
-              itemNamesParam[i] = itemNamesParam[i + 1];
-              itemQuantitiesParam[i] = itemQuantitiesParam[i + 1];
+              electronicNamesParam[i] = electronicNamesParam[i + 1];
+              electronicQuantitiesParam[i] = electronicQuantitiesParam[i + 1];
               itemPowersParam[i] = itemPowersParam[i+1];
             }
           }
@@ -276,5 +375,51 @@ public class Energy_Gauge {
     }
     // Return the new state of the number of items in the grocery list.
     return size;
+  }
+  public static void display(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer electronicPowerParam[] ,int size) {   
+    //detects if the list has any entries. Displays list if so, otherwise warns user.
+    if (size>0) {
+      //Initializes Power Consummage variable
+      int power = 0;
+      // Loop through each array add the amount of power the item consumes
+      for (int i = 0; i < size; i++) {
+        //Multiplies the amount of power consumed by an item to the item quantity
+        power = power + electronicQuantitiesParam[i]*electronicPowerParam[i];
+      }
+      System.out.printf("%d Power is being used.", power);
+    } else {
+      System.out.println("No list detected/list is empty, please add or check if the correct file was opened.");
+    }
+  }
+  public static void writeToFile(String outputFilename, String[] electronicNamesParam,  Integer[] electronicQuantitiesParam, Integer[] electronicPowerParam, int size) {
+    // File handle to write out to a file.
+    File outFile = new File(outputFilename);
+    
+    // In case the file cannot be written to.
+    try {
+      // Does the actual writing.
+      // Overwrite the file everytime.
+      FileWriter electronicWriter = new FileWriter(outFile, false);
+      
+      // Output the headers.
+      // Use String.format to use %n
+      String headers = String.format("%s%n", "Name,Quantity,Power");
+      electronicWriter.write(headers);
+      
+      // Go through the arrays and output the name and quantity with a comma in between.
+      for (int i = 0; i < size; i++) {
+        String outputLine = String.format("%s,%d,%d%n", electronicNamesParam[i], electronicQuantitiesParam[i], electronicPowerParam[i]);
+        electronicWriter.write(outputLine);
+      }
+      
+      // Writing done.
+      electronicWriter.close();
+      
+      // Let the user know writing is done.
+      System.out.printf("Wrote to file: %s%n", outFile.getAbsolutePath());
+    }
+    catch (IOException ioe) {
+      System.out.printf("Error: Could not write to file: %s%n", outFile.getAbsolutePath());
+    }
   }
 }
