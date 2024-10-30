@@ -154,6 +154,7 @@ public class Energy_Gauge {
         quantity = 1;
       }
       try {
+        //Parses power usage to an Integer.
         power = Integer.parseInt(stringPower);
       }
       catch (NumberFormatException nfe) {
@@ -190,7 +191,7 @@ public class Energy_Gauge {
    *         2 to delete a electronic,
    *         3 to display the electronics,
    *         4 to edit an electronic,
-   *         5 to quit (writes out the grocery list)
+   *         5 to quit (writes out the electronic list)
    */
   public static int displayMenu() {
     // Read input from the keyboard.
@@ -376,6 +377,15 @@ public class Energy_Gauge {
     // Return the new state of the number of items in the grocery list.
     return size;
   }
+  /**
+   * Displays the power usage of everything by multiplication.
+   * Uses given values in the csv.
+   * 
+   * @param electronicNamesParam is the electronic item names
+   * @param electronicQuantitiesParam is the quantities of the electrnic items
+   * @param electronicPowerParam is the power consumption of the items
+   * @param size is the size of the list
+   */
   public static void display(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer electronicPowerParam[] ,int size) {   
     //detects if the list has any entries. Displays list if so, otherwise warns user.
     if (size>0) {
@@ -386,11 +396,23 @@ public class Energy_Gauge {
         //Multiplies the amount of power consumed by an item to the item quantity
         power = power + electronicQuantitiesParam[i]*electronicPowerParam[i];
       }
+      //Prints out the finished equation.
       System.out.printf("%d Power is being used.", power);
     } else {
+      //Tells user the list is empty.
       System.out.println("No list detected/list is empty, please add or check if the correct file was opened.");
     }
   }
+  /**
+   * Displays the power usage of everything by multiplication.
+   * Uses given values in the csv.
+   * 
+   * @param outputFilename is the file to write to
+   * @param electronicNamesParam is the electronic item names
+   * @param electronicQuantitiesParam is the quantities of the electrnic items
+   * @param electronicPowerParam is the power consumption of the items
+   * @param size is the size of the list
+   */
   public static void writeToFile(String outputFilename, String[] electronicNamesParam,  Integer[] electronicQuantitiesParam, Integer[] electronicPowerParam, int size) {
     // File handle to write out to a file.
     File outFile = new File(outputFilename);
