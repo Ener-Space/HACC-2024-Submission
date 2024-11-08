@@ -1,5 +1,6 @@
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -7,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
-import javax.imageio.ImageIO;
-import javax.swing.*;
 
 /**
  * A Class that models the GUI for the Energy game.
@@ -19,9 +18,11 @@ import javax.swing.*;
 public class GUI implements ActionListener {
 
     // Parts of the GUI
-    private JLabel label;
+    private JLabel energyText;
+    private JLabel incomeText;
     private BackgroundPanel panel;
     private double currentEnergyUsage;
+    private double currentIncome;
     private LinkedList<electronic> electronics;
     private JButton button;
     private JButton button2;
@@ -40,41 +41,44 @@ public class GUI implements ActionListener {
         //Initializes variables.
         this.electronics = electronics;
         this.currentEnergyUsage = getEnergyUsed(electronics);
+        this.currentIncome = getIncome(electronics);
 
         //Creates the JFrame for the window.
         JFrame frame = new JFrame();
 
         //Creates button 1, adds action listener to make it function.
-        button = new JButton("Button");
+        button = new JButton("Increment Computer (0.2 energy usage, 0.08 income)");
         button.addActionListener(this);
 
         //Creates button 2, adds action listener to make it function.
-        button2 = new JButton("Button2");
+        button2 = new JButton("Increment Washing Machine (1 energy usage, 0.42 income)");
         button2.addActionListener(this);
 
         //Creates button 3, adds action listener to make it function.
-        button3 = new JButton("Button3");
+        button3 = new JButton("Increment Ceiling Fan (0.075 energy usage, 0.03 income)");
         button3.addActionListener(this);
 
         //Creates button 4, adds action listener to make it function.
-        button4 = new JButton("Button4");
+        button4 = new JButton("Increment Air Conditioner (3.5 energy usage, 1.47 income)");
         button4.addActionListener(this);
 
-        button5 = new JButton("Button5");
+        button5 = new JButton("Change Background");
         button5.addActionListener(this);
 
-        //Creates label for energy being used.
-        label = new JLabel("Energy currently being used : " + currentEnergyUsage);
+        //Creates label for energy being used and income gained from it.
+        energyText = new JLabel("Energy currently being used : " + currentEnergyUsage);
+        incomeText = new JLabel("Income gained : " + currentIncome);
 
         panel = new BackgroundPanel(image);
         panel.setBorder(BorderFactory.createEmptyBorder(200, 400, 200, 400));
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0, 1));
         panel.add(button);
         panel.add(button2);
         panel.add(button3);
         panel.add(button4);
         panel.add(button5);
-        panel.add(label);
+        panel.add(energyText);
+        panel.add(incomeText);
 
         frame.add(panel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -163,6 +167,7 @@ public class GUI implements ActionListener {
             // Adds electronic to the linked list.
             electronics.add(new electronic(inputName, convertedEnergyUsage, convertedIncome, convertedAmount));
         }
+        //closes reader and returns converted linked list.
         Catherine.close();
         return electronics;
     }
@@ -174,55 +179,37 @@ public class GUI implements ActionListener {
      * @return is the energy being used by all objects in the stack.
      */
     public static double getEnergyUsed(LinkedList<electronic> electronics) {
+        //initializes return variable.
         double energyUsage = 0.0;
+        //runs for all entries in electronics array
         for (electronic electronic : electronics) {
+            //Adds the energy used by the electronic read to energyUsage
             energyUsage += electronic.getEnergyUsage() * electronic.getAmount();
         }
+        //Makes sure that there's 3 decimal places, whilst removing floating point errors
+        energyUsage = Math.round(energyUsage * 100.000) / 100.000;
         return energyUsage;
     }
+
     /**
-     * Processes events and does an action based off what event happened.
+     * Calculates the total income generated from a list of electronic devices.
      *
-     * @param e the event to be processed
+     * @param electronics A linked list of electronic objects from which the income will be calculated.
+     * @return The total income generated from all electronic devices in the list.
      */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button) {
-            electronics.getFirst().setAmount(electronics.getFirst().getAmount()+1);
-            currentEnergyUsage = getEnergyUsed(electronics);
-            label.setText("Energy currently being used : " + currentEnergyUsage);
-        } else if (e.getSource() == button2) {
-            electronics.get(1).setAmount(electronics.get(1).getAmount()+1);
-            currentEnergyUsage = getEnergyUsed(electronics);
-            label.setText("Energy currently being used : " + currentEnergyUsage);
-        } else if (e.getSource() == button3) {
-            electronics.get(2).setAmount(electronics.get(2).getAmount()+1);
-            currentEnergyUsage = getEnergyUsed(electronics);
-            label.setText("Energy currently being used : " + currentEnergyUsage);
-        } else if (e.getSource() == button4) {
-            electronics.get(3).setAmount(electronics.get(3).getAmount()+1);
-            currentEnergyUsage = getEnergyUsed(electronics);
-            label.setText("Energy currently being used : " + currentEnergyUsage);
-        } else if (e.getSource() == button5) {
-            if (counter) {
-                try {
-                    image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test2.png"));
-                } catch (IOException ioe) {
-                    System.out.println("Unable to find file");
-                }
-                panel.setImage(image);
-                counter = false;
-            } else {
-                try {
-                    image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test.png"));
-                } catch (IOException ioe) {
-                    System.out.println("Unable to find file");
-                }
-                panel.setImage(image);
-                counter = true;
-            }
+    public static double getIncome(LinkedList<electronic> electronics) {
+        //initializes return variable.
+        double income = 0.0;
+        //runs for all entries in electronics array
+        for (electronic electronic : electronics) {
+            //adds the income gained from the electronic read to income.
+            income += electronic.getIncome() * electronic.getAmount();
         }
+        //makes sure there are 3 decimal places while getting rid of floating point errors
+        income = Math.round(income * 100.000) / 100.000;
+        return income;
     }
+
     //Launches the GUI.
     public static void main(String[] args) {
         // Ensures only 1 program argument, reminds user to use a .csv fle for it.
@@ -242,5 +229,70 @@ public class GUI implements ActionListener {
         }
         // Initializes the GUI, uses a method to convert to linked list and sends to gui.
         new GUI(convertToLinkedList(inFile), image);
+    }
+
+    /**
+     * Processes events and does an action based off what event happened.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //Checks which button was pressed.
+        if (e.getSource() == button) {
+            //Adds 1 to computer amount then re-calculates and re-displays energy being used and income being gained
+            electronics.getFirst().setAmount(electronics.getFirst().getAmount() + 1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            energyText.setText("Energy currently being used : " + currentEnergyUsage);
+            currentIncome = getIncome(electronics);
+            incomeText.setText("Income currently being gained : " + currentIncome);
+        } else if (e.getSource() == button2) {
+            //Adds 1 to washing machine amount then re-calculates and re-displays energy being used and income being gained
+            electronics.get(1).setAmount(electronics.get(1).getAmount() + 1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            energyText.setText("Energy currently being used : " + currentEnergyUsage);
+            currentIncome = getIncome(electronics);
+            incomeText.setText("Income currently being gained : " + currentIncome);
+        } else if (e.getSource() == button3) {
+            //Adds 1 to ceiling fan amount then re-calculates and re-displays energy being used and income being gained
+            electronics.get(2).setAmount(electronics.get(2).getAmount() + 1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            energyText.setText("Energy currently being used : " + currentEnergyUsage);
+            currentIncome = getIncome(electronics);
+            incomeText.setText("Income currently being gained : " + currentIncome);
+        } else if (e.getSource() == button4) {
+            //Adds 1 to air conditioner amount then re-calculates and re-displays energy being used and income being gained
+            electronics.get(3).setAmount(electronics.get(3).getAmount() + 1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            energyText.setText("Energy currently being used : " + currentEnergyUsage);
+            currentIncome = getIncome(electronics);
+            incomeText.setText("Income currently being gained : " + currentIncome);
+        } else if (e.getSource() == button5) {
+            //Changes background on button press.
+            if (counter) {
+                try {
+                    //Reads background one and saves it to image.
+                    image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test2.png"));
+                } catch (IOException ioe) {
+                    System.out.println("Unable to find background 2");
+                }
+                //sets background to image
+                panel.setImage(image);
+                //switches counter for next time button is pressed
+                counter = false;
+            } else {
+                try {
+                    //reads background 2 and saves it to image.
+                    image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test.png"));
+                } catch (IOException ioe) {
+                    //tells user the background was unable to be found
+                    System.out.println("Unable to find background 1");
+                }
+                //sets background to image
+                panel.setImage(image);
+                //switches counter for next time button is pressed
+                counter = true;
+            }
+        }
     }
 }

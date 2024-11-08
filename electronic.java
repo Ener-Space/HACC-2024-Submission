@@ -39,7 +39,7 @@ class electronic {
     public double getEnergyUsage() {
         return this.energyUsage;
     }
-    public double getIncone() {
+    public double getIncome() {
         return this.income;
     }
     public Integer getAmount() {
