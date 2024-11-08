@@ -11,18 +11,18 @@ public class Energy_Gauge {
     if (args.length != 2) {
         System.out.printf("Error: Expecting 1 program argument. Found %d instead.%n", args.length);
         System.out.printf("Please enter a csv file as the program argument.%n");
-        System.out.printf("First Argument read in, second argument write in");
+        System.out.print("First Argument read in, second argument write in");
         System.exit(1);
     }
      // Maximum electronics list size.
      final int MAX_SIZE = 100;
     
      // Stores the names of each electronic.
-     String electronicNames[] = new String[MAX_SIZE];
+     String[] electronicNames = new String[MAX_SIZE];
      // Stores the quantity of each item.
-     Integer electronicQuantities[] = new Integer[MAX_SIZE];
+     Integer[] electronicQuantities = new Integer[MAX_SIZE];
      //Stores the power consumption of each item.
-     Integer electronicPower[] = new Integer[MAX_SIZE];
+     Integer[] electronicPower = new Integer[MAX_SIZE];
       
      //used to determine where to add the next item.
      int size = 0;
@@ -84,7 +84,7 @@ public class Energy_Gauge {
       // The user chose to quit, write out the grocery list to file.
       writeToFile(args[1], electronicNames, electronicQuantities, electronicPower, size);
     }
-  public static int readFromFile(String inputFilename, String[] electronicNamesParam, Integer electronicQuantitiesParam[], Integer electronicPowerParam[])
+  public static int readFromFile(String inputFilename, String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer[] electronicPowerParam)
     throws ArrayIndexOutOfBoundsException, NoSuchElementException {
                                 
     // The file to read.
@@ -238,7 +238,7 @@ public class Energy_Gauge {
    * @param MAX_SIZE is the maximum number of electronics that can be stored
    * @return new size of the  list
    */
-  public static int add(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, int size, Integer itemPowersParam[], final int MAX_SIZE) {
+  public static int add(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, int size, Integer[] electronicPowerParam, final int MAX_SIZE) {
   
     // Special case if the arrays are full.
     if (size == MAX_SIZE) {
@@ -284,10 +284,10 @@ public class Energy_Gauge {
     // Add the grocery item to the arrays.
     electronicNamesParam[size] = inputName;
     electronicQuantitiesParam[size] = quantity;
-    itemPowersParam[size] = powerConsume;
+    electronicPowerParam[size] = powerConsume;
    
     // Give feedback to user to let them know what is being addded.
-    System.out.println("Added row #" + (size + 1) + ": " + electronicNamesParam[size] + " " + electronicQuantitiesParam[size] + " " + itemPowersParam[size]);
+    System.out.println("Added row #" + (size + 1) + ": " + electronicNamesParam[size] + " " + electronicQuantitiesParam[size] + " " + electronicPowerParam[size]);
    
     // Increase size after an item has been added.
     size++;
@@ -308,7 +308,7 @@ public class Energy_Gauge {
    * @param MAX_SIZE is the maximum number of electronics that can be stored
    * @return new size of the list
    */
-  public static int delete(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer itemPowersParam[], int size, final int MAX_SIZE) {
+  public static int delete(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer[] electronicPowerParam, int size, final int MAX_SIZE) {
     //Checks if list is empty, if it's not runs the delete function, else warns the user.
     if (size>0) {
       // Read input from the keyboard.
@@ -346,13 +346,13 @@ public class Energy_Gauge {
           // Convert row to an index in the array by subtracting 1.
           index = inputRow - 1;
           // Give feedback to user to let them know what is being deleted
-          System.out.println("Deleting row #" + inputRow + ": " + electronicNamesParam[index] + " " + electronicQuantitiesParam[index] + " " + itemPowersParam[index]);
+          System.out.println("Deleting row #" + inputRow + ": " + electronicNamesParam[index] + " " + electronicQuantitiesParam[index] + " " + electronicPowerParam[index]);
           //Checks if the list is full AND if the row to be deleted is the last row. If so, replaces the deleted row with null instead of shifting.
           if (index==MAX_SIZE-1 && size==MAX_SIZE) {  
             //Replaces values with null instead of shifting them.
             electronicNamesParam[index] = null;
             electronicQuantitiesParam[index] = null;
-            itemPowersParam[index] = null;
+            electronicPowerParam[index] = null;
           } else {
             // Delete item by shifting items on the right of the item to the left.
             // Start the shift at the specific index.
@@ -360,7 +360,7 @@ public class Energy_Gauge {
               // Take the element on the right and store it on the left.
               electronicNamesParam[i] = electronicNamesParam[i + 1];
               electronicQuantitiesParam[i] = electronicQuantitiesParam[i + 1];
-              itemPowersParam[i] = itemPowersParam[i+1];
+              electronicPowerParam[i] = electronicPowerParam[i+1];
             }
           }
           
@@ -386,7 +386,7 @@ public class Energy_Gauge {
    * @param electronicPowerParam is the power consumption of the items
    * @param size is the size of the list
    */
-  public static void display(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer electronicPowerParam[] ,int size) {   
+  public static void display(String[] electronicNamesParam, Integer[] electronicQuantitiesParam, Integer[] electronicPowerParam, int size) {
     //detects if the list has any entries. Displays list if so, otherwise warns user.
     if (size>0) {
       //Initializes Power Consummage variable

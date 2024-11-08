@@ -18,7 +18,6 @@ import javax.swing.JPanel;
  *
  * @author Marcus Sosa
  * @version 1.0.0
- *
  */
 public class GUI implements ActionListener {
 
@@ -26,23 +25,34 @@ public class GUI implements ActionListener {
     private JLabel label;
     private JFrame frame;
     private JPanel panel;
+    private double currentEnergyUsage;
+    private LinkedList<electronic> electronics;
+    private JButton button;
+    private JButton button2;
 
     /**
      * Constructs a GUI
      *
+     * @param electronics A linked list that has the values of electronic objects stored inside.
      */
     public GUI(LinkedList<electronic> electronics) {
-
+        this.electronics = electronics;
+        this.currentEnergyUsage = getEnergyUsed(electronics);
         frame = new JFrame();
 
-        JButton button = new JButton("Button");
+        button = new JButton("Button");
         button.addActionListener(this);
-        label = new JLabel("Number of times clicked: 0");
+
+        button2 = new JButton("other button");
+        button2.addActionListener(this);
+
+        label = new JLabel("Energy currently being used : " + currentEnergyUsage);
 
         panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(400, 400, 400, 400));
         panel.setLayout(new GridLayout(0, 1));
         panel.add(button);
+        panel.add(button2);
         panel.add(label);
 
         frame.add(panel, BorderLayout.CENTER);
@@ -52,18 +62,16 @@ public class GUI implements ActionListener {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        // Ensures only 1 program arguement, reminds user to use a .csv fle for it.
-        if (args.length != 1) {
-            System.out.printf("Error : 1 program argument expected, %d given instead.", args.length);
-            System.out.println("Please give a .csv file for the program argument.\nClosing program...");
-            System.exit(1);
-        }
-        // Instantiates a Linkedstack
+    /**
+     * Converts a file in .csv format into a Linked Stack of electronic objects.
+     *
+     * @param inFile is the .csv file being read from.
+     * @return a linked stack of electronic objects created from the read file.
+     */
+    public static LinkedList<electronic> convertToLinkedList(File inFile) {
+        // Instantiates a Linked stack
         LinkedList<electronic> electronics = new LinkedList<>();
-        // Creates a file object based off file provided from program arguement.
-        File inFile = new File(args[0]);
-        // Initializes two readers to read off program argument.
+        // Initializes two readers to read off of the file.
         Scanner Heathcliff = null;
         Scanner Catherine = null;
 
@@ -81,7 +89,7 @@ public class GUI implements ActionListener {
 
         // If the filepath is invalid/file doesn't exist.
         try {
-            // Connects Catherine to the program arguement file.
+            // Connects Catherine to the file.
             Catherine = new Scanner(inFile);
         } catch (FileNotFoundException fnf) {
             System.out.printf("Error: Cannot open file: %s%n", inFile.getAbsolutePath());
@@ -89,12 +97,12 @@ public class GUI implements ActionListener {
         }
         //Skips first line due to it being useless
         Catherine.nextLine();
-        
+
         // Runs while file still has a next line.
         while (Catherine.hasNext()) {
             // reads next line.
             line = Catherine.nextLine();
-            // Makes Heathcliff read off line read by Catherine
+            // Makes Heathcliff read off of the line read by Catherine
             Heathcliff = new Scanner(line);
             Heathcliff.useDelimiter(",");
             // Reads off the line and adds read values as variables.
@@ -103,7 +111,7 @@ public class GUI implements ActionListener {
             inputIncome = Heathcliff.next();
             inputAmount = Heathcliff.next();
             // attempts to convert Energy Usage into a double.
-            // uses a try-catch just incase it doesn't.
+            // uses a try-catch just in-case it doesn't.
             try {
                 convertedEnergyUsage = Double.parseDouble(inputEnergyUsage);
                 // If successful, uses round() to prevent floating point errors.
@@ -113,7 +121,7 @@ public class GUI implements ActionListener {
                 System.out.printf("Error : %s could not be converted into a double.", inputEnergyUsage);
             }
             // attempts to convert income into a double.
-            // uses a try-catch just incase it doesn't.
+            // uses a try-catch just in-case it doesn't.
             try {
                 convertedIncome = Double.parseDouble(inputIncome);
                 // If successful, uses round() to prevent floating point errors.
@@ -123,24 +131,61 @@ public class GUI implements ActionListener {
                 System.out.printf("Error : %s could not be converted into a double.", inputIncome);
             }
             // attempts to convert income into a double.
-            // uses a try-catch just incase it doesn't.
+            // uses a try-catch just in-case it doesn't.
             try {
                 convertedAmount = Integer.parseInt(inputAmount);
             } catch (NumberFormatException nfe) {
                 // tells user what failed to convert.
                 System.out.printf("Error : %s could not be converted into a int.", inputAmount);
             }
-            // Adds electronic to the linkedlist.
+            // Adds electronic to the linked list.
             electronics.add(new electronic(inputName, convertedEnergyUsage, convertedIncome, convertedAmount));
         }
         Catherine.close();
-        // Initializes the GUI, adds the list that was imported via loops earlier.
-        new GUI (electronics);
+        return electronics;
     }
 
+    /**
+     * Calculates energy consumed from a linked stack of electronics.
+     *
+     * @param electronics is the linked stack.
+     * @return is the energy being used by all objects in the stack.
+     */
+    public static double getEnergyUsed(LinkedList<electronic> electronics) {
+        double energyUsage = 0.0;
+        for (int i = 0; i < electronics.size(); i++) {
+            energyUsage += electronics.get(i).getEnergyUsage()*electronics.get(i).getAmount();
+        }
+        return energyUsage;
+    }
+    /**
+     * Processes events and does an action based off what event happened.
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if (e.getSource() == button) {
+            electronics.getFirst().setAmount(electronics.getFirst().getAmount()+1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            label.setText("Energy currently being used : " + currentEnergyUsage);
+        } else if (e.getSource() == button2) {
+            electronics.get(1).setAmount(electronics.get(1).getAmount()+1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            label.setText("Energy currently being used : " + currentEnergyUsage);
+        }
     }
-
+    //Launches the GUI.
+    public static void main(String[] args) {
+        // Ensures only 1 program argument, reminds user to use a .csv fle for it.
+        if (args.length != 1) {
+            System.out.printf("Error : 1 program argument expected, %d given instead.", args.length);
+            System.out.println("Please give a .csv file for the program argument.\nClosing program...");
+            System.exit(1);
+        }
+        // Creates a file object based off file provided from program argument.
+        File inFile = new File(args[0]);
+        // Initializes the GUI, uses a method to convert to linked list and sends to gui.
+        new GUI(convertToLinkedList(inFile));
+    }
 }
