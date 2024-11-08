@@ -1,17 +1,14 @@
-
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 /**
  * A Class that models the GUI for the Energy game.
@@ -23,36 +20,59 @@ public class GUI implements ActionListener {
 
     // Parts of the GUI
     private JLabel label;
-    private JFrame frame;
-    private JPanel panel;
+    private BackgroundPanel panel;
     private double currentEnergyUsage;
     private LinkedList<electronic> electronics;
     private JButton button;
     private JButton button2;
+    private JButton button3;
+    private JButton button4;
+    private JButton button5;
+    private Image image;
 
     /**
      * Constructs a GUI
      *
      * @param electronics A linked list that has the values of electronic objects stored inside.
      */
-    public GUI(LinkedList<electronic> electronics) {
+    public GUI(LinkedList<electronic> electronics, Image image) {
+        //Initializes variables.
         this.electronics = electronics;
         this.currentEnergyUsage = getEnergyUsed(electronics);
-        frame = new JFrame();
 
+        //Creates the JFrame for the window.
+        JFrame frame = new JFrame();
+
+        //Creates button 1, adds action listener to make it function.
         button = new JButton("Button");
         button.addActionListener(this);
 
+        //Creates button 2, adds action listener to make it function.
         button2 = new JButton("Button2");
         button2.addActionListener(this);
 
+        //Creates button 3, adds action listener to make it function.
+        button3 = new JButton("Button3");
+        button3.addActionListener(this);
+
+        //Creates button 4, adds action listener to make it function.
+        button4 = new JButton("Button4");
+        button4.addActionListener(this);
+
+        button5 = new JButton("Button5");
+        button5.addActionListener(this);
+
+        //Creates label for energy being used.
         label = new JLabel("Energy currently being used : " + currentEnergyUsage);
 
-        panel = new JPanel();
-        panel.setBorder(BorderFactory.createEmptyBorder(400, 400, 400, 400));
+        panel = new BackgroundPanel(image);
+        panel.setBorder(BorderFactory.createEmptyBorder(200, 400, 200, 400));
         panel.setLayout(new GridLayout(0,1));
         panel.add(button);
         panel.add(button2);
+        panel.add(button3);
+        panel.add(button4);
+        panel.add(button5);
         panel.add(label);
 
         frame.add(panel, BorderLayout.CENTER);
@@ -61,6 +81,7 @@ public class GUI implements ActionListener {
         frame.pack();
         frame.setVisible(true);
     }
+
 
     /**
      * Converts a file in .csv format into a Linked Stack of electronic objects.
@@ -72,20 +93,20 @@ public class GUI implements ActionListener {
         // Instantiates a Linked stack
         LinkedList<electronic> electronics = new LinkedList<>();
         // Initializes two readers to read off of the file.
-        Scanner Heathcliff = null;
+        Scanner Heathcliff;
         Scanner Catherine = null;
 
         // Temporary variable to store lines when retrieving line by line.
-        String line = "";
+        String line;
         // Storage variables
-        String inputName = "";
+        String inputName;
         double convertedEnergyUsage = 0.0;
         double convertedIncome = 0.0;
         int convertedAmount = 0;
         // Temporary variables to store doubles and integers before converting.
-        String inputEnergyUsage = "";
-        String inputIncome = "";
-        String inputAmount = "";
+        String inputEnergyUsage;
+        String inputIncome;
+        String inputAmount;
 
         // If the filepath is invalid/file doesn't exist.
         try {
@@ -153,8 +174,8 @@ public class GUI implements ActionListener {
      */
     public static double getEnergyUsed(LinkedList<electronic> electronics) {
         double energyUsage = 0.0;
-        for (int i = 0; i < electronics.size(); i++) {
-            energyUsage += electronics.get(i).getEnergyUsage()*electronics.get(i).getAmount();
+        for (electronic electronic : electronics) {
+            energyUsage += electronic.getEnergyUsage() * electronic.getAmount();
         }
         return energyUsage;
     }
@@ -173,6 +194,21 @@ public class GUI implements ActionListener {
             electronics.get(1).setAmount(electronics.get(1).getAmount()+1);
             currentEnergyUsage = getEnergyUsed(electronics);
             label.setText("Energy currently being used : " + currentEnergyUsage);
+        } else if (e.getSource() == button3) {
+            electronics.get(2).setAmount(electronics.get(2).getAmount()+1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            label.setText("Energy currently being used : " + currentEnergyUsage);
+        } else if (e.getSource() == button4) {
+            electronics.get(3).setAmount(electronics.get(3).getAmount()+1);
+            currentEnergyUsage = getEnergyUsed(electronics);
+            label.setText("Energy currently being used : " + currentEnergyUsage);
+        } else if (e.getSource() == button5) {
+            try {
+                image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\DocExp\\DocExp\\default_icon.png\""));
+            } catch (IOException ioe) {
+                System.out.println("Unable to find file");
+            }
+            panel = new BackgroundPanel(image);
         }
     }
     //Launches the GUI.
@@ -185,7 +221,14 @@ public class GUI implements ActionListener {
         }
         // Creates a file object based off file provided from program argument.
         File inFile = new File(args[0]);
+        //Creates an image file object for the background.
+        Image image = null;
+        try {
+            image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test.png"));
+        } catch (IOException ioe) {
+            System.out.println("Unable to find file");
+        }
         // Initializes the GUI, uses a method to convert to linked list and sends to gui.
-        new GUI(convertToLinkedList(inFile));
+        new GUI(convertToLinkedList(inFile), image);
     }
 }
