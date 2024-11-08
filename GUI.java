@@ -29,6 +29,7 @@ public class GUI implements ActionListener {
     private JButton button4;
     private JButton button5;
     private Image image;
+    private boolean counter = false;
 
     /**
      * Constructs a GUI
@@ -203,12 +204,23 @@ public class GUI implements ActionListener {
             currentEnergyUsage = getEnergyUsed(electronics);
             label.setText("Energy currently being used : " + currentEnergyUsage);
         } else if (e.getSource() == button5) {
-            try {
-                image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test2.png"));
-            } catch (IOException ioe) {
-                System.out.println("Unable to find file");
+            if (counter) {
+                try {
+                    image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test2.png"));
+                } catch (IOException ioe) {
+                    System.out.println("Unable to find file");
+                }
+                panel.setImage(image);
+                counter = false;
+            } else {
+                try {
+                    image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test.png"));
+                } catch (IOException ioe) {
+                    System.out.println("Unable to find file");
+                }
+                panel.setImage(image);
+                counter = true;
             }
-            panel.setImage(image);
         }
     }
     //Launches the GUI.
