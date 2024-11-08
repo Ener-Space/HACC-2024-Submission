@@ -13,7 +13,6 @@ import java.util.Scanner;
  * A Class that models the GUI for the Energy game.
  *
  * @author Marcus Sosa
- * @version 1.0.0
  */
 public class GUI implements ActionListener {
 
