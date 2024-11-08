@@ -204,11 +204,11 @@ public class GUI implements ActionListener {
             label.setText("Energy currently being used : " + currentEnergyUsage);
         } else if (e.getSource() == button5) {
             try {
-                image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\DocExp\\DocExp\\default_icon.png\""));
+                image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test2.png"));
             } catch (IOException ioe) {
                 System.out.println("Unable to find file");
             }
-            panel = new BackgroundPanel(image);
+            panel.setImage(image);
         }
     }
     //Launches the GUI.
