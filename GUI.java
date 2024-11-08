@@ -43,14 +43,14 @@ public class GUI implements ActionListener {
         button = new JButton("Button");
         button.addActionListener(this);
 
-        button2 = new JButton("other button");
+        button2 = new JButton("Button2");
         button2.addActionListener(this);
 
         label = new JLabel("Energy currently being used : " + currentEnergyUsage);
 
         panel = new JPanel();
         panel.setBorder(BorderFactory.createEmptyBorder(400, 400, 400, 400));
-        panel.setLayout(new GridLayout(0, 1));
+        panel.setLayout(new GridLayout(0,1));
         panel.add(button);
         panel.add(button2);
         panel.add(label);
