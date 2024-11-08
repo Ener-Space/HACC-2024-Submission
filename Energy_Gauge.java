@@ -23,7 +23,7 @@ public class Energy_Gauge {
      Integer electronicQuantities[] = new Integer[MAX_SIZE];
      //Stores the power consumption of each item.
      Integer electronicPower[] = new Integer[MAX_SIZE];
-       
+      
      //used to determine where to add the next item.
      int size = 0;
      //used to store user choice to open menu

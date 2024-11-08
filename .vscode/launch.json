@@ -6,6 +6,15 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Energy GUI",
+            "request": "launch",
+            "mainClass": "GUI",
+            "args":[
+                "energy.csv"
+            ]
+        },
+        {
+            "type": "java",
             "name": "Energy_Gauge",
             "request": "launch",
             "mainClass": "Energy_Gauge",
