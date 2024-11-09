@@ -31,7 +31,6 @@ public class GUI implements ActionListener {
     private JButton button5;
     private Image image;
     private boolean counter = false;
-    private JFrame frame;
 
     /**
      * Constructs a GUI
@@ -45,7 +44,7 @@ public class GUI implements ActionListener {
         this.currentIncome = getIncome(electronics);
 
         //Creates the JFrame for the window.
-        frame = new JFrame();
+        JFrame frame = new JFrame();
 
         //Creates button 1, adds action listener to make it function.
         button = new JButton("Increment Computer (0.2 energy usage, 0.08 income)");
@@ -227,7 +226,9 @@ public class GUI implements ActionListener {
         try {
             image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test.png"));
         } catch (IOException ioe) {
-            System.out.println("Unable to find file");
+            //Tells user that background 1 is missing then closes program.
+            JOptionPane.showMessageDialog(null,"Background Image 1 was not found, closing program.", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
         // Initializes the GUI, uses a method to convert to linked list and sends to gui.
         new GUI(convertToLinkedList(inFile), image);
