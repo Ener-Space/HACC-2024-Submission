@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+
 /**
  * A Class that models the GUI for the Energy game.
  *
@@ -30,6 +31,7 @@ public class GUI implements ActionListener {
     private JButton button5;
     private Image image;
     private boolean counter = false;
+    private JFrame frame;
 
     /**
      * Constructs a GUI
@@ -43,7 +45,7 @@ public class GUI implements ActionListener {
         this.currentIncome = getIncome(electronics);
 
         //Creates the JFrame for the window.
-        JFrame frame = new JFrame();
+        frame = new JFrame();
 
         //Creates button 1, adds action listener to make it function.
         button = new JButton("Increment Computer (0.2 energy usage, 0.08 income)");
@@ -61,6 +63,7 @@ public class GUI implements ActionListener {
         button4 = new JButton("Increment Air Conditioner (3.5 energy usage, 1.47 income)");
         button4.addActionListener(this);
 
+        //Creates button 5, adds action listener to make it function.
         button5 = new JButton("Change Background");
         button5.addActionListener(this);
 
@@ -270,10 +273,12 @@ public class GUI implements ActionListener {
             //Changes background on button press.
             if (counter) {
                 try {
-                    //Reads background one and saves it to image.
+                    //Reads background two and saves it to image.
                     image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test2.png"));
                 } catch (IOException ioe) {
-                    System.out.println("Unable to find background 2");
+                    //Tells user that background 2 is missing then closes program.
+                    JOptionPane.showMessageDialog(null,"Background Image 2 was not found, closing program.", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
                 }
                 //sets background to image
                 panel.setImage(image);
@@ -281,11 +286,12 @@ public class GUI implements ActionListener {
                 counter = false;
             } else {
                 try {
-                    //reads background 2 and saves it to image.
+                    //reads background one and saves it to image.
                     image = ImageIO.read(new File("C:\\Users\\277Student\\Documents\\Marcus Sosa Project\\HACC-2024-Submission\\test.png"));
                 } catch (IOException ioe) {
-                    //tells user the background was unable to be found
-                    System.out.println("Unable to find background 1");
+                    //Tells user that background 2 is missing then closes program.
+                    JOptionPane.showMessageDialog(null,"Background Image 2 was not found, closing program.", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
                 }
                 //sets background to image
                 panel.setImage(image);
