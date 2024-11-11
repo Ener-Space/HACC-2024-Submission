@@ -75,7 +75,7 @@ public class GUI implements ActionListener {
         //Creates images
         try {
             //reads background one and saves it to image.
-            background1 = ImageIO.read(new File("HACC-2024-Submission/images/backround energezz.png"));
+            background1 = ImageIO.read(new File("images/backround energezz.png"));
         } catch (IOException ioe) {
             //Tells user that background 2 is missing then closes program.
             JOptionPane.showMessageDialog(null, "Background Image 1 was not found, closing program.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -83,7 +83,7 @@ public class GUI implements ActionListener {
         }
         try {
             //reads background one and saves it to image.
-            background2 = ImageIO.read(new File("HACC-2024-Submission/images/inside1.png"));
+            background2 = ImageIO.read(new File("images/inside1.png"));
         } catch (IOException ioe) {
             //Tells user that background 2 is missing then closes program.
             JOptionPane.showMessageDialog(null, "Background Image 2 was not found, closing program.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -92,22 +92,22 @@ public class GUI implements ActionListener {
         //Attempts to add the bar above the electric panel
         try {
             //reads bar images and saves it to a image object.
-            green = ImageIO.read(new File("HACC-2024-Submission/images/bar_green.png"));
-            yellow = ImageIO.read(new File("HACC-2024-Submission/images/bar_yellow.png"));
-            orange = ImageIO.read(new File("HACC-2024-Submission/images/bar_orange.png"));
-            red = ImageIO.read(new File("HACC-2024-Submission/images/bar_red.png"));
-            black = ImageIO.read(new File("HACC-2024-Submission/images/bar_black.png"));
+            green = ImageIO.read(new File("images/bar_green.png"));
+            yellow = ImageIO.read(new File("images/bar_yellow.png"));
+            orange = ImageIO.read(new File("images/bar_orange.png"));
+            red = ImageIO.read(new File("images/bar_red.png"));
+            black = ImageIO.read(new File("images/bar_black.png"));
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, "ERROR : Bar image files are missing.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         //Attempts to add the factory widows
         try {
             //Reads window images and saves it to a image object.
-            window1 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow.png"));
-            window2 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow2.png"));
-            window3 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow3.png"));
-            window4 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow4.png"));
-            window5 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow5.png"));
+            window1 = ImageIO.read(new File("images/factorywindow.png"));
+            window2 = ImageIO.read(new File("images/factorywindow2.png"));
+            window3 = ImageIO.read(new File("images/factorywindow3.png"));
+            window4 = ImageIO.read(new File("images/factorywindow4.png"));
+            window5 = ImageIO.read(new File("images/factorywindow5.png"));
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, "ERROR : factorywindow files are missing.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -323,11 +323,11 @@ public class GUI implements ActionListener {
                         //sets tally to the correct electronic
                         tally = 0;
                         //Adds image to be displayed.
-                        BufferedImage computerPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeComputer.png"));
+                        BufferedImage computerPanel = ImageIO.read(new File("images/dialougeComputer.png"));
                         computerEdit = new JLabel(new ImageIcon(computerPanel));
                         computerEdit.setBounds(0, 0, 400, 756);
                         //adds image to be displayed
-                        BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/cumputor.png"));
+                        BufferedImage Icon = ImageIO.read(new File("images/cumputor.png"));
                         JLabel icon = new JLabel(new ImageIcon(Icon));
                         icon.setBounds(165,50,150,150);
                         computerEdit.add(icon);
@@ -390,11 +390,11 @@ public class GUI implements ActionListener {
                     //sets tally to the correct electronic
                     tally = 1;
                     //Adds panel
-                    BufferedImage WashingPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing1.png"));
+                    BufferedImage WashingPanel = ImageIO.read(new File("images/dialougeWashing1.png"));
                     washingEdit = new JLabel(new ImageIcon(WashingPanel));
                     washingEdit.setBounds(0, 0, 400, 756);
                     //adds image to be displayed
-                    BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/Washer.png"));
+                    BufferedImage Icon = ImageIO.read(new File("images/Washer.png"));
                     JLabel icon = new JLabel(new ImageIcon(Icon));
                     icon.setBounds(165,40,150,150);
                     washingEdit.add(icon);
@@ -455,12 +455,12 @@ public class GUI implements ActionListener {
                     //sets tally to the correct electronic
                     tally = 2;
                     //Adds panel
-                    BufferedImage TVPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing3.png"));
+                    BufferedImage TVPanel = ImageIO.read(new File("images/dialougeWashing3.png"));
                     //adds labels to show panel and image
                     TVEdit = new JLabel(new ImageIcon(TVPanel));
                     TVEdit.setBounds(0, 0, 400, 756);
                     //adds image to be displayed
-                    BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/TV.png"));
+                    BufferedImage Icon = ImageIO.read(new File("images/TV.png"));
                     JLabel icon = new JLabel(new ImageIcon(Icon));
                     icon.setBounds(165,50,150,150);
                     TVEdit.add(icon);
@@ -523,10 +523,10 @@ public class GUI implements ActionListener {
                     //sets tally to the correct electronic
                     tally = 3;
                     //Adds panel
-                    BufferedImage ACPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing4.1.png"));
+                    BufferedImage ACPanel = ImageIO.read(new File("images/dialougeWashing4.1.png"));
                     ACEdit = new JLabel(new ImageIcon(ACPanel));
                     //adds image to be displayed
-                    BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/AC Unit.png"));
+                    BufferedImage Icon = ImageIO.read(new File("images/AC Unit.png"));
                     JLabel icon = new JLabel(new ImageIcon(Icon));
                     icon.setBounds(165,50,150,150);
                     ACEdit.add(icon);
@@ -629,7 +629,7 @@ public class GUI implements ActionListener {
                 //Creates the bar.
                 //uses a try catch incase bar image is missing
                 try {
-                    BufferedImage barImage = ImageIO.read(new File("HACC-2024-Submission/images/bar_green.png"));
+                    BufferedImage barImage = ImageIO.read(new File("images/bar_green.png"));
                     bar = new JLabel(new ImageIcon(barImage));
                     bar.setBounds(350,30,50,117);
                 } catch (IOException ex) {
