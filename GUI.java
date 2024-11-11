@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferDouble;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,18 +20,31 @@ import java.util.Scanner;
 public class GUI implements ActionListener {
 
     // Parts of the GUI
+    //uses a try catch to add photos
+    private BufferedImage green;
+    private BufferedImage red;
+    private BufferedImage yellow;
+    private BufferedImage orange;
+    private BufferedImage black;
+    private BufferedImage window1;
+    private BufferedImage window2;
+    private BufferedImage window3;
+    private BufferedImage window4;
+    private JLabel window;
+    private BufferedImage window5;
     private boolean counter2 = true;
     private JLabel computerEdit;
+    private JLabel usage;
     private JLabel washingEdit;
     private JLabel TVEdit;
     private JLabel ACEdit;
+    private JLabel deviceinfo;
     private JLabel energyText;
-    private JLabel incomeText;
+    private JLabel bar;
     private JFrame frame;
     private BackgroundPanel outside;
     private BackgroundPanel inside;
     private double currentEnergyUsage;
-    private double currentIncome;
     private LinkedList<electronic> electronics;
     private JButton button;
     private JButton button2;
@@ -52,7 +66,8 @@ public class GUI implements ActionListener {
         //Initializes variables.
         this.electronics = electronics;
         this.currentEnergyUsage = getEnergyUsed(electronics);
-        this.currentIncome = getIncome(electronics);
+        getIncome(electronics);
+
 
         //Creates inside JPanel
         inside = new BackgroundPanel(background2);
@@ -74,24 +89,45 @@ public class GUI implements ActionListener {
             JOptionPane.showMessageDialog(null, "Background Image 2 was not found, closing program.", "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-
+        //Attempts to add the bar above the electric panel
+        try {
+            //reads bar images and saves it to a image object.
+            green = ImageIO.read(new File("HACC-2024-Submission/images/bar_green.png"));
+            yellow = ImageIO.read(new File("HACC-2024-Submission/images/bar_yellow.png"));
+            orange = ImageIO.read(new File("HACC-2024-Submission/images/bar_orange.png"));
+            red = ImageIO.read(new File("HACC-2024-Submission/images/bar_red.png"));
+            black = ImageIO.read(new File("HACC-2024-Submission/images/bar_black.png"));
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null, "ERROR : Bar image files are missing.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        //Attempts to add the factory widows
+        try {
+            //Reads window images and saves it to a image object.
+            window1 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow.png"));
+            window2 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow2.png"));
+            window3 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow3.png"));
+            window4 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow4.png"));
+            window5 = ImageIO.read(new File("HACC-2024-Submission/images/factorywindow5.png"));
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null, "ERROR : factorywindow files are missing.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
         //Creates the JFrame for the window.
         frame = new JFrame();
 
         //Creates button 1, adds action listener to make it function.
-        button = new JButton("Increment Computer (0.2 energy usage, 0.08 income)");
+        button = new JButton();
         button.addActionListener(this);
 
         //Creates button 2, adds action listener to make it function.
-        button2 = new JButton("Increment Washing Machine (1 energy usage, 0.42 income)");
+        button2 = new JButton();
         button2.addActionListener(this);
 
         //Creates button 3, adds action listener to make it function.
-        button3 = new JButton("Increment Ceiling Fan (0.075 energy usage, 0.03 income)");
+        button3 = new JButton();
         button3.addActionListener(this);
 
         //Creates button 4, adds action listener to make it function.
-        button4 = new JButton("Increment Air Conditioner (3.5 energy usage, 1.47 income)");
+        button4 = new JButton();
         button4.addActionListener(this);
 
         //Creates button 5, adds action listener to make it function.
@@ -118,7 +154,6 @@ public class GUI implements ActionListener {
 
         //Creates label for energy being used and income gained from it.
         energyText = new JLabel("Energy currently being used : " + currentEnergyUsage);
-        incomeText = new JLabel("Income gained : " + currentIncome);
 
         //Sets up outside
         outside = new BackgroundPanel(background1);
@@ -285,10 +320,21 @@ public class GUI implements ActionListener {
                 if (counter2) {
                     //Sets image up
                     try {
+                        //sets tally to the correct electronic
+                        tally = 0;
                         //Adds image to be displayed.
                         BufferedImage computerPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeComputer.png"));
                         computerEdit = new JLabel(new ImageIcon(computerPanel));
                         computerEdit.setBounds(0, 0, 400, 756);
+                        //adds image to be displayed
+                        BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/cumputor.png"));
+                        JLabel icon = new JLabel(new ImageIcon(Icon));
+                        icon.setBounds(165,50,150,150);
+                        computerEdit.add(icon);
+                        //adds device info
+                        deviceinfo = new JLabel("<html><p style=\"width:100px\">" + "Amount of Energy a unit Consumes : " + electronics.get(tally).getEnergyUsage() +" Amount of Units: " + electronics.get(tally).getAmount() + "</p></html>");
+                        deviceinfo.setBounds(17,15,150,150);
+                        computerEdit.add(deviceinfo);
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(null, "ERROR : Computer UI unable to be loaded.", "Error", JOptionPane.ERROR_MESSAGE);
                         System.exit(0);
@@ -309,8 +355,6 @@ public class GUI implements ActionListener {
                     inside.repaint();
                     //sets counter2 to false so the next part of the if statement can happen.
                     counter2 = false;
-                    //sets tally to the correct electronic
-                    tally = 0;
                 } else {
                     //deletes computerEdit JLabel and all related information.
                     inside.remove(computerEdit);
@@ -343,10 +387,21 @@ public class GUI implements ActionListener {
             if (counter2) {
                 //Sets image up
                 try {
-                    //Adds image to be displayed.
-                    BufferedImage WashingPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing.png"));
+                    //sets tally to the correct electronic
+                    tally = 1;
+                    //Adds panel
+                    BufferedImage WashingPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing1.png"));
                     washingEdit = new JLabel(new ImageIcon(WashingPanel));
                     washingEdit.setBounds(0, 0, 400, 756);
+                    //adds image to be displayed
+                    BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/Washer.png"));
+                    JLabel icon = new JLabel(new ImageIcon(Icon));
+                    icon.setBounds(165,40,150,150);
+                    washingEdit.add(icon);
+                    //adds device info
+                    deviceinfo = new JLabel("<html><p style=\"width:100px\">" + "Amount of Energy a unit Consumes : " + electronics.get(tally).getEnergyUsage() +" Amount of Units: " + electronics.get(tally).getAmount() + "</p></html>");
+                    deviceinfo.setBounds(17,15,150,150);
+                    washingEdit.add(deviceinfo);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "ERROR : Washing Machine UI unable to be loaded.", "Error", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
@@ -367,8 +422,6 @@ public class GUI implements ActionListener {
                 inside.repaint();
                 //sets counter2 to false so the next part of the if statement can happen.
                 counter2 = false;
-                //sets tally to the correct electronic
-                tally = 1;
             } else {
                 //deletes washingEdit JLabel and all related information.
                 inside.remove(washingEdit);
@@ -399,10 +452,22 @@ public class GUI implements ActionListener {
             if (counter2) {
                 //Sets image up
                 try {
-                    //Adds image to be displayed.
-                    BufferedImage TVPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing.png"));
+                    //sets tally to the correct electronic
+                    tally = 2;
+                    //Adds panel
+                    BufferedImage TVPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing3.png"));
+                    //adds labels to show panel and image
                     TVEdit = new JLabel(new ImageIcon(TVPanel));
                     TVEdit.setBounds(0, 0, 400, 756);
+                    //adds image to be displayed
+                    BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/TV.png"));
+                    JLabel icon = new JLabel(new ImageIcon(Icon));
+                    icon.setBounds(165,50,150,150);
+                    TVEdit.add(icon);
+                    //adds device info
+                    deviceinfo = new JLabel("<html><p style=\"width:100px\">" + "Amount of Energy a unit Consumes : " + electronics.get(tally).getEnergyUsage() +" Amount of Units: " + electronics.get(tally).getAmount() + "</p></html>");
+                    deviceinfo.setBounds(17,15,150,150);
+                    TVEdit.add(deviceinfo);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "ERROR : TV UI unable to be loaded.", "Error", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
@@ -423,8 +488,6 @@ public class GUI implements ActionListener {
                 inside.repaint();
                 //sets counter2 to false so the next part of the if statement can happen.
                 counter2 = false;
-                //sets tally to the correct electronic
-                tally = 2;
             } else {
                 //deletes washingEdit JLabel and all related information.
                 inside.remove(TVEdit);
@@ -452,17 +515,26 @@ public class GUI implements ActionListener {
                 inside.repaint();
                 //sets counter2 to true so the computerEdit gui gets reset and can be retriggered.
                 counter2=true;
-                //sets tally to the correct electronic
-                tally = 1;
             }
         } else if (e.getSource() == button4) {
             if (counter2) {
                 //Sets image up
                 try {
-                    //Adds image to be displayed.
-                    BufferedImage ACPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing.png"));
+                    //sets tally to the correct electronic
+                    tally = 3;
+                    //Adds panel
+                    BufferedImage ACPanel = ImageIO.read(new File("HACC-2024-Submission/images/dialougeWashing4.1.png"));
                     ACEdit = new JLabel(new ImageIcon(ACPanel));
+                    //adds image to be displayed
+                    BufferedImage Icon = ImageIO.read(new File("HACC-2024-Submission/images/AC Unit.png"));
+                    JLabel icon = new JLabel(new ImageIcon(Icon));
+                    icon.setBounds(165,50,150,150);
+                    ACEdit.add(icon);
                     ACEdit.setBounds(0, 0, 400, 756);
+                    //adds device info
+                    deviceinfo = new JLabel("<html><p style=\"width:100px\">" + "Amount of Energy a unit Consumes : " + electronics.get(tally).getEnergyUsage() +" Amount of Units: " + electronics.get(tally).getAmount() + "</p></html>");
+                    deviceinfo.setBounds(17,15,150,150);
+                    ACEdit.add(deviceinfo);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "ERROR : AC UI unable to be loaded.", "Error", JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
@@ -483,8 +555,6 @@ public class GUI implements ActionListener {
                 inside.repaint();
                 //sets counter2 to false so the next part of the if statement can happen.
                 counter2 = false;
-                //sets tally to the correct electronic
-                tally = 4;
             } else {
                 //deletes washingEdit JLabel and all related information.
                 inside.remove(ACEdit);
@@ -552,6 +622,25 @@ public class GUI implements ActionListener {
                 button4.setContentAreaFilled(false);
                 button4.setBorderPainted(false);
                 inside.add(button4);
+                //Creates the image of the window based off background.
+                window = new JLabel(new ImageIcon(window1));
+                window.setBounds(600,0,455,755);
+                inside.add(window);
+                //Creates the bar.
+                //uses a try catch incase bar image is missing
+                try {
+                    BufferedImage barImage = ImageIO.read(new File("HACC-2024-Submission/images/bar_green.png"));
+                    bar = new JLabel(new ImageIcon(barImage));
+                    bar.setBounds(350,30,50,117);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "ERROR : Could not find Green bar image.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                //adds to inside JPanel
+                inside.add(bar);
+                //Adds text to show amount of power being consumed
+                usage = new JLabel("Power being used : " + getEnergyUsed(electronics));
+                usage.setBounds(400,30,150,50);
+                inside.add(usage);
 //                //Adds button 5 to go back outside.
 //                inside.add(button5);
                 //Removes panel to start inside procedure
@@ -582,8 +671,8 @@ public class GUI implements ActionListener {
             //Updates Energy Usage and Income
             currentEnergyUsage = getEnergyUsed(electronics);
             energyText.setText("Energy currently being used : " + currentEnergyUsage);
-            currentIncome = getIncome(electronics);
-            incomeText.setText("Income currently being gained : " + currentIncome);
+            //Updates the bar.
+            barupdate(getEnergyUsed(electronics));
         } else if (e.getSource() == button7) {
             //Makes a variable to store user input
             double convertedAmount = electronics.get(tally).getAmount();
@@ -602,8 +691,38 @@ public class GUI implements ActionListener {
             //Updates energy usage and Income
             currentEnergyUsage = getEnergyUsed(electronics);
             energyText.setText("Energy currently being used : " + currentEnergyUsage);
-            currentIncome = getIncome(electronics);
-            incomeText.setText("Income currently being gained : " + currentIncome);
+            //updates the bar.
+            barupdate(getEnergyUsed(electronics));
         }
+    }
+
+    /**
+     * Updates the bar displayed inside the energy shack.
+     *
+     * @param energy is amount of energy being used.
+     */
+    public void barupdate(double energy) {
+        if (energy >= 0) {
+            bar.setIcon(new ImageIcon(green));
+            window.setIcon(new ImageIcon(window1));
+            if (energy >= 250) {
+                bar.setIcon(new ImageIcon(yellow));
+                window.setIcon(new ImageIcon(window2));
+                if (energy >= 500) {
+                    bar.setIcon(new ImageIcon(orange));
+                    window.setIcon(new ImageIcon(window3));
+                    if (energy >= 750) {
+                        bar.setIcon(new ImageIcon(red));
+                        window.setIcon(new ImageIcon(window4));
+                        if (energy >= 1000) {
+                            bar.setIcon(new ImageIcon(black));
+                            window.setIcon(new ImageIcon(window5));
+                        }
+                    }
+                }
+            }
+        }
+        deviceinfo.setText("<html><p style=\"width:100px\">" + "Amount of Energy a unit Consumes : " + electronics.get(tally).getEnergyUsage() +" Amount of Units: " + electronics.get(tally).getAmount() + "</p></html>");
+        usage.setText("Power being used : " + getEnergyUsed(electronics));
     }
 }
